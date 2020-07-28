@@ -1,4 +1,6 @@
 import socket
+from julius import Julius as J
+julius=J()
 host = 'localhost'   # IPアドレス
 port = 10500         # Juliusとの通信用ポート番号
 # Juliusにソケット通信で接続
