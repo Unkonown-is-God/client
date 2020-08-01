@@ -18,14 +18,19 @@ if __name__ == "__main__":
         flag=0
         pass
     while True:
-        if flag==1:
-            text = jl.load()
-            print(text)
-            if text == '終わり':
+        if flag == 1:
+            try:
+                text = jl.load()
+                if text == '終わり。':
+                    jl.end()
+                    break
+                elif text == '%NOT FOUND%':
+                    continue
+                else:
+                    print('you' + text)
+            except KeyboardInterrupt:
                 jl.end()
                 break
-            elif text == '%NOT FOUND%':
-                continue
         else:
             text = input('> ')
             if not text:
@@ -33,5 +38,5 @@ if __name__ == "__main__":
         url = PREURL+text
         response = requests.get(url)
         json_data = response.json()
-        print(json_data)
+        print('ai:'+json_data['response'])
         jtalk(json_data['response'])

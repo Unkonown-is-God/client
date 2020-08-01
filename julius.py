@@ -3,17 +3,19 @@ import time
 import socket
 HOST = 'localhost'   # IPアドレス
 PORT = 10500         # Juliusとの通信用ポート番号
-DEVNULL = open('/dev/null', 'w')
 CMD = './julius/bin/julius -C julius/dic/main.jconf -C julius/dic/am-gmm.jconf -module'
 class Julius:
     def __init__(self):
         self.c = sp.Popen(CMD, shell=True,
-                          stdout=DEVNULL, stderr=DEVNULL)
+                          stdout=sp.PIPE, stderr=sp.PIPE)
         #サーバ開始
-        time.sleep(10)
-        #起動まで待つ
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client.connect((HOST, PORT))
+        while True:
+            try:
+                self.client.connect((HOST, PORT))
+                break
+            except ConnectionRefusedError:
+                time.sleep(5)
         #接続
         self.data=''
     def end(self):
@@ -30,7 +32,7 @@ class Julius:
                 if index != -1:
                     line = line[index+6:line.find('"', index+6)]
                     recog_text = recog_text + line
-            r=self.data
+            r=recog_text
             self.data = ""
             return r
         else:
@@ -58,6 +60,5 @@ if __name__ == "__main__":
         while True:
             a.demo()
     except KeyboardInterrupt:
-        print('finished')
         a.end()
 
