@@ -1,12 +1,20 @@
 import subprocess as sp
 import time
 import socket
-HOST = 'localhost'   # IPアドレス
-PORT = 10500         # Juliusとの通信用ポート番号
-CMD = './julius/bin/julius -C julius/dic/main.jconf -C julius/dic/am-gmm.jconf -module'
+import os
+
 class Julius:
+    HOST = 'localhost'   # IPアドレス
+    PORT = 10500         # Juliusとの通信用ポート番号
+    WIN = './julius/dic/windows/julius'
+    RASP = './julius/bin/julius'
+    CMD = ' -C julius/dic/main.jconf -C julius/dic/am-gmm.jconf -module'
     def __init__(self):
-        self.c = sp.Popen(CMD, shell=True,
+        if os.name=='nt':
+            cmd=WIN+CMD
+        else:
+            cmd=RASP+CMD
+        self.c = sp.Popen(cmd, shell=True,
                           stdout=sp.PIPE, stderr=sp.PIPE)
         #サーバ開始
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -19,7 +27,7 @@ class Julius:
         #接続
         self.data=''
     def end(self):
-        print('finished')
+        #print('finished')
         self.client.send("DIE".encode('utf-8'))
         self.client.close()
         #サーバを閉じる
@@ -55,7 +63,7 @@ class Julius:
             self.data += str(self.client.recv(1024).decode('utf-8'))
 if __name__ == "__main__":
     a = Julius()
-    print('a')
+    print('demo')
     try:
         while True:
             a.demo()
