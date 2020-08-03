@@ -21,7 +21,8 @@ def jtalk(t):
     outwav = ['-ow', 'open_jtalk.wav']
     cmd = open_jtalk+mech+htsvoice+speed+outwav
     c = subprocess.Popen(cmd, stdin=subprocess.PIPE,
-                         stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+                         stdout=subprocess.PIPE#,stderr=subprocess.PIPE
+                         )
     c.stdin.write(t.encode(code))
     c.stdin.close()
     c.wait()
